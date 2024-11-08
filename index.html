@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Speak Easy</title>
+  <link rel="icon" href="images/logo.png" type="image/x-icon">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #f2f2f2 0%, #eee 74%);
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: center; /* Align header to the center */
+      background-color: #000;
+      color: #fff;
+      padding: 20px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+    }
+
+    .title {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .logo img {
+      max-height: 50px; /* Adjusted logo size */
+      width: auto;
+      margin-right: 10px; /* Add margin for spacing */
+    }
+
+    .menu-icon {
+      cursor: pointer;
+      z-index: 1;
+      position: fixed;
+      top: 40px;
+      left: 20px;
+      width: 30px;
+      height: 10px;
+      background-color: transparent;
+      border: none;
+      padding: 0;
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .menu-icon span {
+      display: block;
+      width: 100%;
+      height: 4px;
+      background-color: #fff;
+      margin-bottom: 5px;
+    }
+
+    .menu-icon.cross span:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .menu-icon.cross span:nth-child(2) {
+      transform: rotate(-45deg) translate(6px, -5px);
+    }
+
+   .sidebar {
+      width: 250px;
+      height: 100%;
+      background-color: #18f504;
+      position: fixed;
+      top: 70px;
+      left: -250px; /* Start off-screen */
+      transition: left 0.3s ease; /* Smooth slide-in animation */
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      padding-top: 20px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      z-index: 999; /* Ensure sidebar is above blurred content */
+    }
+
+    .sidebar.active {
+      left: 0;
+    }
+
+    .menu-item {
+      cursor: pointer;
+      font-size: 16px;
+      padding: 10px 20px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background-color 0.3s ease;
+    }
+
+    .menu-item:hover {
+      background-color: #333;
+    }
+
+    .sub-menu {
+      width: 150px;
+      background-color: #140000f0;
+      position: absolute;
+      top: 50;
+      left: 100%;
+      display: none;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .sub-menu.active {
+      display: block;
+    }
+
+    .sub-menu-item {
+      padding: 10px;
+      color: #0f0;
+    }
+
+    .arrow-button {
+      width: 20px;
+      height: 20px;
+      fill: #fff;
+      transition: transform 0.3s ease;
+    }
+
+    .menu-item:hover .arrow-button {
+      transform: rotate(90deg);
+    }
+    .menu-item a {
+    text-decoration: underline; /* Revert text decoration to underline */
+    color: lime; /* Revert text color to default */
+    font: lime; /* Set font color to lime */
+  }
+
+  /* CSS for the hover effect */
+  
+
+    /* Additional styles for the header when at the top */
+    
+    /* Custom style for the content section */
+    .content-container {
+      margin-top: 60px; /* Adjusted to accommodate the menu bar */
+      padding: 40px;
+      height: calc(100vh - 60px); /* Set height to viewport height minus header height */
+      overflow-y: auto; /* Enable vertical scrollbar */
+    }
+    .content-container {
+  margin-top: 60px; /* Adjusted to accommodate the menu bar */
+  padding: 40px;
+  height: calc(100vh - 60px); /* Set height to viewport height minus header height */
+  overflow-y: auto; /* Enable vertical scrollbar */
+  /* Set background image with opacity */
+  background-image: url('images/background.jpeg');
+  background-size: cover; /* Cover the entire background */
+  background-repeat: no-repeat; /* Prevent repeating the background image */
+  background-position: center; /* Center the background image */
+  background-color: rgba(255, 255, 255, 0.8); /* Adjust opacity by changing the last value */
+}
+    .section {
+      margin-bottom: 40px;
+    }
+
+    .section h2 {
+      font-size: 24px;
+      color: #333;
+    }
+
+    .section p {
+      font-size: 16px;
+      line-height: 1.6;
+      color: #666;
+    }
+
+    /* Blur effect for the content */
+    .blurred {
+      filter: blur(5px); /* Apply blur effect to the content */
+      pointer-events: none; /* Disable pointer events to allow clicks on elements beneath */
+    }
+
+    /* Text alignment when content is blurred */
+    .blurred .section p {
+      text-align: justify; /* Align text when content is blurred */
+    }
+
+    .content-container.blurred {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start; /* Align content to the start */
+      margin-left: 250px; /* Adjusted to match the width of the sidebar */
+      padding: 30px;
+    }
+
+    .function-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 100px;
+  transition: background-color 0.3s ease;
+}
+
+.function-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+a {
+  text-decoration: none; /* Remove underline from all links */
+}
+.function-icon {
+  width: 220px; /* Adjust the size as needed */
+  height: 220px; /* Adjust the size as needed */
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.function-text {
+  font-size: 26px;
+  color: rgb(12, 12, 12); /* Change the text color to lime */
+  font-weight: bold; }/* Make the text bold */
+  </style>
+</head>
+<body>
+  <!-- Header with logo and title -->
+  <header class="header">
+    <!-- Logo -->
+    <div class="logo">
+      <img src="images/logo.png" alt="Logo">
+    </div>
+    <!-- Title -->
+    <h1 class="title">Speak Easy</h1>
+    <!-- Menu Icon -->
+    <button class="menu-icon">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </header>
+  
+  <!-- Sidebar Menu -->
+<div class="sidebar">
+  <!-- Menu items and sub-menu -->
+  <div class="menu-item">Learning Resources (Sample!)<svg class="arrow-button" viewBox="0 0 24 24"><path d="M5.293 7.293a1 1 0 011.414 0L12 12.586l5.293-5.293a1 1 0 111.414 1.414l-6 6a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414z"></path></svg>
+    <div class="sub-menu">
+      <div class="sub-menu-item">English Books</div>
+      <div class="sub-menu-item">Amazon E-Library</div>
+    </div>
+  </div>
+  <div class="menu-item">Interactive Activities (Sample!)<svg class="arrow-button" viewBox="0 0 24 24"><path d="M5.293 7.293a1 1 0 011.414 0L12 12.586l5.293-5.293a1 1 0 111.414 1.414l-6 6a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414z"></path></svg>
+    <div class="sub-menu">
+      <div class="sub-menu-item">
+        <a href="translator1.html">Translator</a>
+      </div>
+      <div class="sub-menu-item">
+        <a href="reading.html">Reading</a>
+      </div>
+      <div class="sub-menu-item">
+        <a href="roleplay.html">Roleplay</a>
+      </div>
+    </div>
+  </div> 
+  <div class="menu-item">Community Forums</div>
+  <div class="menu-item">Progress Tracker</div>
+</div>
+  <!-- Main Content -->
+  <div class="content-container">
+    <div class="section">
+      <h2>About Speak Easy</h2>
+      <p>Speak Easy is a children-based learning platform designed to make language learning fun and interactive. With Speak Easy, children can engage in various activities such as translation, reading, vocabulary building, and role-playing. Our platform offers a diverse range of resources to help children develop language skills in multiple languages.</p>
+    </div>
+    <div class="section">
+      <h2>Interactive Activities</h2>
+       <div class="function-item" id="translator">
+      <a href="translator1.html">
+        <img src="images/translator.png" alt="Translator" class="function-icon">
+        <div class="function-text">Translator</div>
+      </a>
+    </div>
+    <div class="function-item" id="reading">
+      <a href="reading.html">
+        <img src="images/reading-fotor-bg-remover-20240513225553.png" alt="Reading" class="function-icon">
+        <div class="function-text">Reading</div>
+      </a>
+    </div>
+    <div class="function-item" id="roleplay">
+      <a href="roleplay.html">
+        <img src="images/OIP-fotor-bg-remover-20240513225620.png" alt="Roleplay" class="function-icon">
+        <div class="function-text">Roleplay</div>
+      </a>
+    </div>
+  </div>
+</div>
+
+  <script>
+    // JavaScript to toggle sidebar and menu icon
+    const menuIcon = document.querySelector('.menu-icon');
+    const sidebar = document.querySelector('.sidebar');
+    const header = document.querySelector('.header');
+    const content = document.querySelector('.content-container');
+
+    menuIcon.addEventListener('click', () => {
+      sidebar.classList.toggle('active');
+      menuIcon.classList.toggle('cross');
+      header.classList.toggle('header-top');
+      content.classList.toggle('blurred'); // Toggle blur effect on content
+    });
+
+    // Add event listener to show sub-menu and close others when hovering on menu item
+    const menuItems = document.querySelectorAll('.menu-item');
+    menuItems.forEach((menuItem) => {
+      menuItem.addEventListener('mouseenter', () => {
+        const subMenu = menuItem.querySelector('.sub-menu');
+        const allSubMenus = document.querySelectorAll('.sub-menu');
+        allSubMenus.forEach((menu) => {
+          if (menu !== subMenu) {
+            menu.classList.remove('active');
+          }
+        });
+        if (subMenu) {
+          subMenu.classList.add('active');
+        }
+      });
+    });
+
+    // Add event listener to close sub-menu when cursor leaves menu item
+    menuItems.forEach((menuItem) => {
+      menuItem.addEventListener('mouseleave', () => {
+        const subMenu = menuItem.querySelector('.sub-menu');
+        if (subMenu) {
+          subMenu.classList.remove('active');
+        }
+      });
+    });
+
+    // Add event listener to close sidebar and remove blur effect when clicking outside
+    document.addEventListener('click', (event) => {
+      const sidebar = document.querySelector('.sidebar');
+      const menuIcon = document.querySelector('.menu-icon');
+
+      if (!sidebar.contains(event.target) && !menuIcon.contains(event.target)) {
+        sidebar.classList.remove('active');
+        menuIcon.classList.remove('cross');
+        content.classList.remove('blurred'); // Remove blur effect from content
+      }
+    });
+
+    // Add event listener to close sub-menu when clicking outside
+    document.addEventListener('click', (event) => {
+      const subMenus = document.querySelectorAll('.sub-menu');
+      subMenus.forEach((subMenu) => {
+        const menuItem = subMenu.parentElement;
+        if (!menuItem.contains(event.target) && !subMenu.contains(event.target)) {
+          subMenu.classList.remove('active');
+        }
+      });
+    });
+
+    // Function selection
+    const functionItems = document.querySelectorAll('.function-item');
+    functionItems.forEach((item) => {
+      item.addEventListener('click', () => {
+        // Highlight selected function
+        functionItems.forEach((el) => {
+          el.classList.remove('selected');
+        });
+        item.classList.add('selected');
+
+        // Add functionality for each function item
+        switch (item.id) {
+          case 'translator':
+            // Add functionality for translator
+            console.log('Translator selected');
+            break;
+          case 'reading':
+            // Add functionality for reading
+            console.log('Reading selected');
+            break;
+          case 'roleplay':
+            // Add functionality for roleplay
+            console.log('Roleplay selected');
+            break;
+          default:
+            break;
+        }
+      });
+    });
+  </script>
+</body>
+</html>
